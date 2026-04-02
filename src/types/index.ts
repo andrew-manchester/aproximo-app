@@ -43,6 +43,8 @@ export interface Property {
   baths: number;
   sqft: number;
   imageId: number;
+  imageUrl?: string;
+  zillowUrl?: string;
   nearestTransit: NearestTransit;
   forRent: boolean;
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowUpDown } from 'lucide-react';
 import type { Property, SortOption } from '../types';
+import type { DataSource } from '../hooks/useProperties';
 import { PropertyCard } from './PropertyCard';
 
 interface PropertyListProps {
@@ -11,6 +12,8 @@ interface PropertyListProps {
   totalCount: number;
   sortBy: SortOption;
   onSortChange: (sort: SortOption) => void;
+  dataSource?: DataSource;
+  isLoading?: boolean;
 }
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
@@ -27,11 +30,36 @@ export const PropertyList: React.FC<PropertyListProps> = ({
   totalCount,
   sortBy,
   onSortChange,
+  dataSource = 'mock',
+  isLoading = false,
 }) => {
   const matchingCount = properties.filter(p => matchingPropertyIds.has(p.id)).length;
 
   return (
     <div className="flex flex-col h-full min-h-0">
+      {/* Data source banner */}
+      <div className="mb-2 flex-shrink-0">
+        {isLoading ? (
+          <div className="flex items-center gap-1.5 text-xs text-slate-500 bg-slate-100 rounded-lg px-2.5 py-1.5">
+            <svg className="w-3.5 h-3.5 animate-spin text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+            </svg>
+            <span>Fetching live listings…</span>
+          </div>
+        ) : dataSource === 'api' || dataSource === 'cached' ? (
+          <div className="flex items-center gap-1.5 text-xs text-green-700 bg-green-50 rounded-lg px-2.5 py-1.5">
+            <span className="w-2 h-2 rounded-full bg-green-500 inline-block" />
+            <span>Live data from Zillow{dataSource === 'cached' ? ' (cached)' : ''}</span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-1.5 text-xs text-amber-700 bg-amber-50 rounded-lg px-2.5 py-1.5">
+            <span className="w-2 h-2 rounded-full bg-amber-400 inline-block" />
+            <span>Demo data · Connect API for live listings</span>
+          </div>
+        )}
+      </div>
+
       {/* List header */}
       <div className="flex items-center justify-between mb-3 flex-shrink-0">
         <div>

@@ -31,7 +31,9 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
       {/* Image */}
       <div className="relative h-44 overflow-hidden">
         <img
-          src={`https://picsum.photos/seed/${property.imageId}/400/250`}
+          src={property.imageUrl
+            ? property.imageUrl
+            : `https://picsum.photos/seed/${property.imageId}/400/250`}
           alt={property.address}
           className="w-full h-full object-cover"
           loading="lazy"

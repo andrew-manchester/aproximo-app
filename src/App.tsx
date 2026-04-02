@@ -4,9 +4,9 @@ import { SearchBar } from './components/SearchBar';
 import { TransitFilters } from './components/TransitFilters';
 import { MapView } from './components/MapView';
 import { PropertyList } from './components/PropertyList';
-import { PROPERTIES } from './data/properties';
 import { getLinesForCity } from './data/transitLines';
 import type { Filters, Property, SortOption } from './types';
+import { useProperties } from './hooks/useProperties';
 
 const DEFAULT_CITY = 'Boston';
 
@@ -79,9 +79,11 @@ function App() {
 
   const transitLines = useMemo(() => getLinesForCity(filters.city), [filters.city]);
 
+  const { properties, dataSource, isLoading } = useProperties(filters.city);
+
   const { cityProps, matchingIds, sorted } = useMemo(
-    () => applyFilters(PROPERTIES, filters),
-    [filters]
+    () => applyFilters(properties, filters),
+    [properties, filters]
   );
 
   const handleCityChange = (city: string) => {
@@ -138,6 +140,8 @@ function App() {
               totalCount={cityProps.length}
               sortBy={filters.sortBy}
               onSortChange={handleSortChange}
+              dataSource={dataSource}
+              isLoading={isLoading}
             />
           </div>
         </div>
